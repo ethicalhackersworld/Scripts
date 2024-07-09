@@ -54,3 +54,30 @@ End Sub
 - **VBA Script**: The VBA script creates a shell object to run the batch file and then notifies the user once the script completes.
 
 By following these steps, you can check group policies using a combination of VBA and a batch file. This approach leverages the strengths of both scripting environments to accomplish your task.
+
+**********************************8
+Sub DisplayGroupPolicies()
+    Dim regKey As Object
+    Dim regPath As String
+    Dim policyValue As String
+    
+    ' Example: Check if a specific group policy setting exists and display its value
+    regPath = "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU\NoAutoUpdate"
+    
+    On Error Resume Next
+    policyValue = CreateObject("WScript.Shell").RegRead(regPath)
+    On Error GoTo 0
+    
+    If policyValue <> "" Then
+        MsgBox "Group Policy Setting 'NoAutoUpdate' Value: " & policyValue
+    Else
+        MsgBox "Group Policy Setting 'NoAutoUpdate' not found or could not be read."
+    End If
+    
+    ' Add more policies to check as needed
+    ' Example:
+    ' regPath = "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System\DisableCMD"
+    ' policyValue = CreateObject("WScript.Shell").RegRead(regPath)
+    ' MsgBox "Group Policy Setting 'DisableCMD' Value: " & policyValue
+End Sub
+
