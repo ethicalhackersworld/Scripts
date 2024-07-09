@@ -1,83 +1,30 @@
-Creating a VBA script to check group policies is a bit unconventional, as VBA (Visual Basic for Applications) is typically used within Microsoft Office applications and not for system administration tasks. However, you can use VBA to call external commands or scripts that can check group policies.
+\\etrieves system information such as the operating system version, hostname, processor information, and total physical memory
 
-Here's an example of how you can create a VBA script that calls a batch file to check specific group policies. This batch file will use the `gpresult` command, which is a standard tool in Windows for displaying the Resultant Set of Policy (RSoP) information for a user or computer.
+# Retrieve System Information
 
-### Step 1: Create a Batch File
+# Operating System
+$os = Get-CimInstance Win32_OperatingSystem
+$osName = $os.Caption
+$osVersion = $os.Version
+$osArchitecture = $os.OSArchitecture
 
-Create a batch file (`check_gpo.bat`) with the following content to get the group policy results:
+# Hostname
+$hostname = $env:COMPUTERNAME
 
-```batch
-@echo off
-gpresult /h "%~dp0gpresult.html"
-```
+# Processor
+$processor = Get-CimInstance Win32_Processor
+$processorName = $processor.Name
+$processorCores = $processor.NumberOfCores
 
-This command generates an HTML report of the group policy results and saves it in the same directory as the batch file.
+# Memory
+$memory = Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum
+$memoryCapacityBytes = $memory.Sum
+$memoryCapacityGB = [math]::Round($memoryCapacityBytes / 1GB, 2)
 
-### Step 2: Create the VBA Script
-
-Now, create a VBA script that calls this batch file:
-
-```vba
-Sub CheckGroupPolicy()
-    Dim shell As Object
-    Dim batchFilePath As String
-    
-    ' Path to the batch file
-    batchFilePath = "C:\path\to\your\check_gpo.bat"
-    
-    ' Create a shell object
-    Set shell = CreateObject("WScript.Shell")
-    
-    ' Run the batch file
-    shell.Run batchFilePath, 1, True
-    
-    ' Notify the user
-    MsgBox "Group policy check completed. Please check the generated gpresult.html file."
-    
-    ' Clean up
-    Set shell = Nothing
-End Sub
-```
-
-### Step 3: Run the VBA Script
-
-1. Open an Office application (e.g., Excel or Word).
-2. Press `Alt + F11` to open the VBA editor.
-3. Insert a new module (`Insert > Module`).
-4. Copy and paste the VBA script into the module.
-5. Modify the `batchFilePath` variable to point to the location of your batch file.
-6. Run the `CheckGroupPolicy` macro.
-
-### Explanation
-
-- **Batch File**: The batch file uses `gpresult /h` to generate an HTML report of the group policy settings.
-- **VBA Script**: The VBA script creates a shell object to run the batch file and then notifies the user once the script completes.
-
-By following these steps, you can check group policies using a combination of VBA and a batch file. This approach leverages the strengths of both scripting environments to accomplish your task.
-
-**********************************8
-Sub DisplayGroupPolicies()
-    Dim regKey As Object
-    Dim regPath As String
-    Dim policyValue As String
-    
-    ' Example: Check if a specific group policy setting exists and display its value
-    regPath = "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU\NoAutoUpdate"
-    
-    On Error Resume Next
-    policyValue = CreateObject("WScript.Shell").RegRead(regPath)
-    On Error GoTo 0
-    
-    If policyValue <> "" Then
-        MsgBox "Group Policy Setting 'NoAutoUpdate' Value: " & policyValue
-    Else
-        MsgBox "Group Policy Setting 'NoAutoUpdate' not found or could not be read."
-    End If
-    
-    ' Add more policies to check as needed
-    ' Example:
-    ' regPath = "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System\DisableCMD"
-    ' policyValue = CreateObject("WScript.Shell").RegRead(regPath)
-    ' MsgBox "Group Policy Setting 'DisableCMD' Value: " & policyValue
-End Sub
-
+# Display Information
+Write-Output "System Information:"
+Write-Output "-------------------"
+Write-Output "Operating System: $osName (Version: $osVersion, Architecture: $osArchitecture)"
+Write-Output "Hostname: $hostname"
+Write-Output "Processor: $processorName (Cores: $processorCores)"
+Write-Output "Total Physical Memory: $memoryCapacityGB GB"
