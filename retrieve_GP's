@@ -1,30 +1,14 @@
 \\etrieves system information such as the operating system version, hostname, processor information, and total physical memory
 
-# Retrieve System Information
+' Save this script as info.vbe
+Set objNetwork = CreateObject("WScript.Network")
+Set objShell = CreateObject("WScript.Shell")
+Set objOS = GetObject("winmgmts:root\cimv2:Win32_OperatingSystem=@")
 
-# Operating System
-$os = Get-CimInstance Win32_OperatingSystem
-$osName = $os.Caption
-$osVersion = $os.Version
-$osArchitecture = $os.OSArchitecture
+strComputerName = objNetwork.ComputerName
+strUserName = objNetwork.UserName
+strOSVersion = objOS.Version
 
-# Hostname
-$hostname = $env:COMPUTERNAME
-
-# Processor
-$processor = Get-CimInstance Win32_Processor
-$processorName = $processor.Name
-$processorCores = $processor.NumberOfCores
-
-# Memory
-$memory = Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum
-$memoryCapacityBytes = $memory.Sum
-$memoryCapacityGB = [math]::Round($memoryCapacityBytes / 1GB, 2)
-
-# Display Information
-Write-Output "System Information:"
-Write-Output "-------------------"
-Write-Output "Operating System: $osName (Version: $osVersion, Architecture: $osArchitecture)"
-Write-Output "Hostname: $hostname"
-Write-Output "Processor: $processorName (Cores: $processorCores)"
-Write-Output "Total Physical Memory: $memoryCapacityGB GB"
+WScript.Echo "Computer Name: " & strComputerName
+WScript.Echo "User Name: " & strUserName
+WScript.Echo "OS Version: " & strOSVersion
