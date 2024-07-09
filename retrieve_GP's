@@ -14,6 +14,7 @@ WScript.Echo "OS Version: " & strOSVersion
 
 \\Save this script as domain_computers.vbe - it will display the names, operating systems, and OS versions of all computers in the domain. 
 
+' Save this script as domain_computers.vbe
 Set objRootDSE = GetObject("LDAP://RootDSE")
 strDomain = objRootDSE.Get("defaultNamingContext")
 
@@ -26,17 +27,24 @@ Set objCommand.ActiveConnection = objConnection
 objCommand.CommandText = "<LDAP://" & strDomain & ">;(objectCategory=computer);name,operatingSystem,operatingSystemVersion;subtree"
 Set objRecordSet = objCommand.Execute
 
-WScript.Echo "Computers in domain: " & strDomain
+Dim output
+output = "Computers in domain: " & strDomain & vbCrLf & vbCrLf
 Do Until objRecordSet.EOF
-    WScript.Echo "Computer Name: " & objRecordSet.Fields("name").Value
+    output = output & "Computer Name: " & objRecordSet.Fields("name").Value & vbCrLf
     On Error Resume Next
-    WScript.Echo "Operating System: " & objRecordSet.Fields("operatingSystem").Value
-    WScript.Echo "OS Version: " & objRecordSet.Fields("operatingSystemVersion").Value
+    output = output & "Operating System: " & objRecordSet.Fields("operatingSystem").Value & vbCrLf
+    output = output & "OS Version: " & objRecordSet.Fields("operatingSystemVersion").Value & vbCrLf
     On Error GoTo 0
-    WScript.Echo "-------------------------"
+    output = output & "-------------------------" & vbCrLf
     objRecordSet.MoveNext
 Loop
 
 objConnection.Close
 
+' Save output to a text file
+Set objFSO = CreateObject("Scripting.FileSystemObject")
+Set objFile = objFSO.CreateTextFile("domain_computers.txt", True)
+objFile.Write output
+objFile.Close
 
+WScript.Echo "Computer information has been saved to domain_computers.txt"
