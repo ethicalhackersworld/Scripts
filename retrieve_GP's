@@ -1,0 +1,19 @@
+// VBA script that retrieves and displays group policy information
+
+Sub GetGroupPolicies()
+    
+    Dim wParam As Variant
+    wParam = "gpresult /v"
+    
+    Dim shell As Object
+    Set shell = CreateObject("WScript.Shell")
+    
+    Dim cmd As Variant
+    cmd = shell.Exec(wParam)
+    
+    Dim output As String
+    output = cmd.StdOut.Readall
+    
+    MsgBox output
+    
+End Sub
