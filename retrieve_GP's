@@ -48,3 +48,19 @@ objFile.Write output
 objFile.Close
 
 WScript.Echo "Computer information has been saved to domain_computers.txt"
+
+
+
+\\ fetch pcs using cmd without amdin pivs
+
+# Import the Active Directory module (if not already imported)
+Import-Module ActiveDirectory
+
+# Query Active Directory for all computer objects in the domain
+$computers = Get-ADComputer -Filter *
+
+# Output the list of computers
+foreach ($computer in $computers) {
+    Write-Output $computer.Name
+}
+
