@@ -20,3 +20,9 @@ End Sub
 click on the Save icon in the Microsoft Visual Basic for Application window & close document.
 
 Re-open 
+
+
+//batch file (.bat) code that opens PowerShell
+
+@echo off
+powershell.exe -Command "Write-Output 'Hello, World!'"
