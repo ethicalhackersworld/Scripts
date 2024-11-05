@@ -1,0 +1,50 @@
+Encryption - - - - - 
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad
+import base64
+
+# Key and IV (same as used in encryption)
+key = b"7594679467946794"
+iv = b"7594679467946794"
+
+# Plaintext to encrypt
+plaintext = "6276"
+
+# Step 1: Pad the plaintext
+padded_plaintext = pad(plaintext.encode(), AES.block_size)
+
+# Step 2: AES encryption
+cipher = AES.new(key, AES.MODE_CBC, iv)
+encrypted_bytes = cipher.encrypt(padded_plaintext)
+
+# Step 3: Base64 encode the encrypted bytes
+encrypted_value = base64.b64encode(encrypted_bytes).decode()
+
+# Output the encrypted value
+print("Encrypted value:", encrypted_value)
+
+
+Decryption - - - - - 
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+import base64
+
+# Key and IV (same as used in encryption)
+key = b"7594679467946794"
+iv = b"7594679467946794"
+
+# Encrypted value to decrypt
+encrypted_value = "a4+W9kb3EGmr/KD5Zv1IVA=="
+
+# Step 1: Base64 decode
+encrypted_bytes = base64.b64decode(encrypted_value)
+
+# Step 2: AES decryption
+cipher = AES.new(key, AES.MODE_CBC, iv)
+decrypted_padded_bytes = cipher.decrypt(encrypted_bytes)
+
+# Step 3: Remove padding
+decrypted_value = unpad(decrypted_padded_bytes, AES.block_size).decode()
+
+# Output the decrypted value
+print("Decrypted value:", decrypted_value)
